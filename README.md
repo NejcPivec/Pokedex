@@ -12,3 +12,5 @@ Pokedex build with NextJs and Tailwind. It shows only first 100 pokemons.
 [Pokemon API](https://pokeapi.co/)
 
 ### Screenshot
+
+![Screenshot](https://github.com/NejcPivec/Pokedex/blob/master/Screenshot/page.png)
