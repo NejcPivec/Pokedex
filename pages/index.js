@@ -38,6 +38,8 @@ export default function Home({ pokemons }) {
     }
   };
 
+  const pokeLimit = pokemons.slice(0,101);
+
   const [search, setSearch] = useState("");
   const [searchedPokemon, setSearchedPokemon] = useState([]);
   
@@ -87,7 +89,7 @@ export default function Home({ pokemons }) {
         </div>
         ) : (
           <div className="grid sm:grid-cols-2 sm:gap-4 md:grid-cols-3 lg:ml-20 xl:grid-cols-4 xl:ml-0">
-          {pokemons.map((pokemon, index) => (
+          {pokeLimit.map((pokemon, index) => (
             <div
               key={index}
               className={`max-w-sm rounded overflow-hidden shadow-lg ${cardColor(
@@ -121,14 +123,14 @@ export const getStaticProps = async () => {
 
   try {
 
-    for (let i = 1; i <= 100; i++) {
+    for (let i = 1; i <= 600; i++) {
       const res = await fetch(`https://pokeapi.co/api/v2/pokemon/${i}`);
       const { types } = await res.json();
       const pokeType = types[0].type["name"];
       pokeTypes.push(pokeType);
     }
 
-    const res = await fetch("https://pokeapi.co/api/v2/pokemon?limit=100");
+    const res = await fetch("https://pokeapi.co/api/v2/pokemon?limit=600");
     const data = await res.json();
     const pokemons = data.results.map((result, index) => {
       const paddedIndex = ("00" + (index + 1)).slice(-3);
@@ -139,7 +141,6 @@ export const getStaticProps = async () => {
         ...result,
         pokeImg,
         pokemonType,
-
       };
     });
 

@@ -1,7 +1,6 @@
 # Pokedex
 
-Pokedex build with NextJs and Tailwind. It shows only first 100 pokemons.
-It also allows you to search for a specific pokemon.
+Pokedex build with NextJs and Tailwind. It shows only 100 pokemons, but you are able to search between 600 diffrent pokemons.
 
 ### Techologies:
 
