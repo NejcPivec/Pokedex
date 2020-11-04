@@ -1,6 +1,8 @@
+import React, {useState, useEffect} from 'react';
 import Layout from "../components/Layout";
 
 export default function Home({ pokemons }) {
+
   const cardColor = (type) => {
     switch (type) {
       case "fire":
@@ -32,10 +34,18 @@ export default function Home({ pokemons }) {
       case "normal":
         return "bg-white";
       default:
-        console.log("Sorry no pokemon");
         break;
     }
   };
+
+  const [search, setSearch] = useState("");
+  const [searchedPokemon, setSearchedPokemon] = useState([]);
+  
+
+  useEffect(() => {
+      const result = pokemons.filter(pokemon => pokemon.name.match(search));
+      setSearchedPokemon(result);
+  }, [search])
 
   return (
     <Layout title="Pokedex - NextJS">
@@ -44,28 +54,64 @@ export default function Home({ pokemons }) {
         alt="logo"
         className=" sm:w-64 sm:object-cover  xl:w-1/4 object-contain m-auto mb-12"
       />
-      <div className="grid sm:grid-cols-1 sm:gap-4 md:grid-cols-2 lg:ml-20 xl:grid-cols-3 xl:ml-0">
-        {pokemons.map((pokemon, index) => (
-          <div
-            key={index}
-            className={`max-w-sm rounded overflow-hidden shadow-lg ${cardColor(
-              pokemon.pokemonType
-            )} p-8`}
-          >
-            <img className="w-full" src={pokemon.pokeImg} alt={pokemon.name} />
-            <div className="px-4 py-2">
-              <div className="font-bold text-4xl mb-2 capitalize text-center">
-                {pokemon.name}
+
+      <form>
+          <div className="mb-4">
+            <input value={search} onChange={e => setSearch(e.target.value)} className="shadow appearance-none border rounded w-full py-4 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="pokemon" type="text" placeholder="Search Pokemon..." />
+          </div>
+      </form>
+
+      {
+        searchedPokemon.length > 0 ? (
+          <div className="grid sm:grid-cols-2 sm:gap-4 md:grid-cols-3 lg:ml-20 xl:grid-cols-4 xl:ml-0">
+          {searchedPokemon.map((pokemon, index) => (
+            <div
+              key={index}
+              className={`max-w-sm rounded overflow-hidden shadow-lg ${cardColor(
+                pokemon.pokemonType
+              )} p-8`}
+            >
+              <img className="w-full" src={pokemon.pokeImg} alt={pokemon.name} />
+              <div className="px-4 py-2">
+                <div className="font-bold text-4xl mb-2 capitalize text-center">
+                  {pokemon.name}
+                </div>
+              </div>
+              <div className="px-6 pt-4 pb-2">
+                <span className="inline-block bg-gray-200 rounded-full px-6 py-2  text-lg font-semibold text-gray-700 mr-2 mb-2">
+                  {`# ${pokemon.pokemonType}`}
+                </span>
               </div>
             </div>
-            <div className="px-6 pt-4 pb-2">
-              <span className="inline-block bg-gray-200 rounded-full px-6 py-2  text-lg font-semibold text-gray-700 mr-2 mb-2">
-                {`# ${pokemon.pokemonType}`}
-              </span>
+          ))}
+        </div>
+        ) : (
+          <div className="grid sm:grid-cols-2 sm:gap-4 md:grid-cols-3 lg:ml-20 xl:grid-cols-4 xl:ml-0">
+          {pokemons.map((pokemon, index) => (
+            <div
+              key={index}
+              className={`max-w-sm rounded overflow-hidden shadow-lg ${cardColor(
+                pokemon.pokemonType
+              )} p-8`}
+            >
+              <img className="w-full" src={pokemon.pokeImg} alt={pokemon.name} />
+              <div className="px-4 py-2">
+                <div className="font-bold text-4xl mb-2 capitalize text-center">
+                  {pokemon.name}
+                </div>
+              </div>
+              <div className="px-6 pt-4 pb-2">
+                <span className="inline-block bg-gray-200 rounded-full px-6 py-2  text-lg font-semibold text-gray-700 mr-2 mb-2">
+                  {`# ${pokemon.pokemonType}`}
+                </span>
+              </div>
             </div>
-          </div>
-        ))}
-      </div>
+          ))}
+        </div>
+        )
+      }
+
+     
     </Layout>
   );
 }
@@ -74,6 +120,7 @@ export const getStaticProps = async () => {
   const pokeTypes = [];
 
   try {
+
     for (let i = 1; i <= 100; i++) {
       const res = await fetch(`https://pokeapi.co/api/v2/pokemon/${i}`);
       const { types } = await res.json();
@@ -92,6 +139,7 @@ export const getStaticProps = async () => {
         ...result,
         pokeImg,
         pokemonType,
+
       };
     });
 
